@@ -513,4 +513,12 @@ OXE_DATASET_CONFIGS = {
         "proprio_encoding": ProprioEncoding.POS_EULER,
         "action_encoding": ActionEncoding.EEF_POS,
     },
+    ### Robosuite Finetuning datasets
+    "robomimic_lift_dataset": {
+        "image_obs_keys": {"primary": "image", "secondary": None, "wrist": "wrist_image"},
+        "depth_obs_keys": {"primary": None, "secondary": None, "wrist": None},
+        "state_obs_keys": ["proprio"],
+        "proprio_encoding": ProprioEncoding.POS_QUAT,
+        "action_encoding": ActionEncoding.EEF_POS,
+    },
 }

@@ -16,9 +16,9 @@ def get_config(config_string="full,multimodal"):
     # and second image key should be the wrist view (None if not used)
 
     FINETUNING_KWARGS = {
-        "name": "bridge_dataset",
-        "data_dir": "./tests/debug_dataset",
-        "image_obs_keys": {"primary": "image_0", "wrist": None},
+        "name": "robomimic_lift_dataset_subsampled50_cams",
+        "data_dir": "/lustre/fsw/portfolios/nvr/users/lawchen/tensorflow_datasets",
+        "image_obs_keys": {"primary": "image", "wrist": "wrist_image"},
         "proprio_obs_key": "proprio",
         "language_key": "language_instruction",
         "action_proprio_normalization_type": "normal",

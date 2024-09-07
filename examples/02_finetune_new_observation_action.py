@@ -13,6 +13,8 @@ import optax
 import tensorflow as tf
 import tqdm
 import wandb
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3,4,5,6,7'
 
 from octo.data.dataset import make_single_dataset
 from octo.model.components.action_heads import L1ActionHead
@@ -66,18 +68,18 @@ def main(_):
     logging.info("Loading finetuning dataset...")
     dataset = make_single_dataset(
         dataset_kwargs=dict(
-            name="aloha_sim_cube_scripted_dataset",
+            name="robomimic_lift_dataset_subsampled50_cams",
             data_dir=FLAGS.data_dir,
-            image_obs_keys={"primary": "top"},
-            proprio_obs_key="state",
+            image_obs_keys={"primary": "image", "wrist": "wrist_image"},
+            proprio_obs_key="proprio",
             language_key="language_instruction",
         ),
         traj_transform_kwargs=dict(
             window_size=1,
-            action_horizon=50,
+            action_horizon=16,
         ),
         frame_transform_kwargs=dict(
-            resize_size={"primary": (256, 256)},
+            resize_size={"primary": (256, 256), "wrist": (128, 128)},
         ),
         train=True,
     )
@@ -103,7 +105,7 @@ def main(_):
     # load pre-training config and modify --> remove wrist cam, add proprio input, change action head
     # following Zhao et al. we use "action chunks" of length 50 and L1 loss for ALOHA
     config = pretrained_model.config
-    del config["model"]["observation_tokenizers"]["wrist"]
+    # del config["model"]["observation_tokenizers"]["wrist"]
     ###
     config["model"]["observation_tokenizers"]["proprio"] = ModuleSpec.create(
         LowdimObsTokenizer,
@@ -116,8 +118,8 @@ def main(_):
     # Fully override the old action head with a new one (for smaller changes, you can use update_config)
     config["model"]["heads"]["action"] = ModuleSpec.create(
         L1ActionHead,
-        action_horizon=50,
-        action_dim=14,
+        action_horizon=16,
+        action_dim=7,
         readout_key="readout_action",
     )
 

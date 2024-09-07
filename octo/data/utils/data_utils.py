@@ -399,7 +399,7 @@ def relabel_actions(traj: Dict[str, Any]) -> Dict[str, Any]:
     """
     # relabel the first 6 action dims (xyz position, xyz rotation) using the reached proprio
     movement_actions = (
-        traj["observation"]["state"][1:, :6] - traj["observation"]["state"][:-1, :6]
+        traj["observation"]["proprio"][1:, :6] - traj["observation"]["proprio"][:-1, :6]
     )
 
     # discard the last timestep of the trajectory
